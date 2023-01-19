@@ -76,28 +76,15 @@
         
     % Capitules
     \pagenumbering{arabic}
-    % \include{Cap1/Cap1}
-    \include{Cap1/Cap1-Nessa}
-    \include{Cap2/Cap2-Nessa}
-    \include{Cap3/Cap3}
-    \include{Cap4/Cap4}
-    
-    % IDK why but this line must be here
-    \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-    
-    \include{Cap5/Cap5}
+    \include{Cap1/Cap1}
+    \include{Cap2/Cap2}
+        
     
     % Appendix
     \renewcommand*{\TheAlphaChapter}{\Alph{chapter}}
     \begin{appendices}
-        \include{Appendix/python_modules/systemd_service}
-        \include{Appendix/python_modules/qt_material}
-        \include{Appendix/python_modules/matplotlib_figurestream}
-        \include{Appendix/python_modules/radiant_framework}
-        \include{Appendix/databases/motor_imagery}
-        \include{Appendix/databases/working_memory}
-        \include{Appendix/paradigms/rsst_paradigms}
-        % \include{Appendix/paradigms/band_neurofeedback}
+        \include{Appendix/appendix1/qt_material.tex}
+        
     \end{appendices}
     
     % Bibliography

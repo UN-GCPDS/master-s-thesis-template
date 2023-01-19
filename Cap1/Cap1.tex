@@ -3,142 +3,39 @@
 %======================================================================
 \section{Motivation}\label{sec:motivation}
 
-A \gls*{BCI} is a hardware and software communication system that enables cerebral activity alone to control computers and external devices \cite{nicolas2012brain}. The widespread use of neurophysiological signals to develop \gls*{BCI} systems has certainly varied clinical and nonclinical applications. Main implementations in medical issues include rehabilitation, cognitive state analysis, diagnostics, assistive devices for communication, locomotion or movement. On other hand, there is a bunch of researches that approaches the \gls*{BCI} systems to healthy people in fields like: neuroergonomics \cite{tremmel2019estimating}, smart homes \cite{maleki2021brain}, neuromarketing and advertising \cite{polat2021eeg}, games \cite{vasiljevic2020brain}, education \cite{taherian2018caregiver}, entertainment \cite{mudgal2020brain}, security and validation \cite{bansal2019eeg}.
-
-In order to connect the brain with external devices, a two types of brain activities that can be monitored: electrophysiological and hemodynamics. Electro-chemical transmitters exchanging information between the neurons generate the electrophysiological signals \cite{baillet2001electromagnetic}; the \gls*{EEG}, electrocorticography, magnetoencephalography, and electrical signal acquisition in single neurons are the techniques used to measure these activities. The hemodynamics response is a process in which the blood releases glucose to active neurons \cite{laureys2009functional}; neuroimaging methods can quantify these changes, such as functional magnetic resonance and near infrared spectroscopy. Yet, \gls*{EEG} is the most common method to get relevant information from the brain activity in \glspl*{BCI} systems, owing to its high temporal resolution, relatively low cost, high portability, and few risks to the users \cite{nicolas-alonso_brain_2012}. The Figure \ref{fig:bci_system} shows how a \gls*{BCI} system works, just like a brain transducer.
-
-\input{Cap1/Figures/bci_system}
-
-However, though \gls*{BCI} systems could require high demanding computational resources \cite{kostiukevych2021convolutional}, it is possible to build a competent system that works \gls*{EEG}, skin-surface electrodes, and low-cost embedded acquisition devices. Furthermore, using free software and open source resources. With the correct selection and integration of these components and focusing on the improvement of the signal-acquisition may consequently achieve clinical validation, effective dissemination models, and probably most important of all, with increased reliability. Then, \gls*{BCI}s are pointed to become a major new technology for people with disabilities and possibly for the general population as well \cite{wolpaw2012brain}.
-
-In a local context, the Signal Processing and Recognition Group (SPRG) of the Universidad Nacional de Colombia has been working on the analysis of neurophysiological data to propose and develop machine learning methodologies for the assisted diagnosis of mental conditions \cite{cardenas2017enhanced, collazos2019instance}, automated analysis of human activity recognition \cite{pulgarin2017relevant}, and biomedical data analysis \cite{hurtado2016identification}. More recently, an interest in the SPRG to work with own databases, instead of using public domain ones, in a variety of research projects (supported by Minciencias, Dirección Nacional de Investigaciones de Manizales (DIMA), and Vicerrectoría de Investigaciones de la Universidad Nacional de Colombia):
-
-    
-
-\begin{itemize}
-
-    \item Herramienta de apoyo al diagnónstico del TDAH en niños a partir de múnltiples características de actividad eléctrica cerebral desde registros \gls*{EEG}.
-
-    \item Desarrollo de un sistema integrado de monitoreo de actividad cerebral a partir de registros \gls*{EEG} en pacientes bajo anestesia general para ambientes quirúrgicos.
-
-    \item Prototipo de interfaz cerebro-computador de bajo costo para la detección de patrones relevantes de actividad eléctrica cerebral relacionados con TDAH.
-
-    \item Prototipo de interfaz cerebro-computador multimodal para la detección de patrones relevantes relacionados con trastornos de impulsividad.
-
-    \item Interfaz cerebro-computador basada en aprendizaje de máquina y teoría de información como soporte a la detección de trastornos de déficit de atención e hiperactividad.
-
-    \item Brain Music: Prototipo de interfaz interactiva para generación de piezas musicales basado en respuestas eléctricas cerebrales y técnicas de composición atonal.
-
-\end{itemize}
-
-
-The achievement of a independent \gls*{BCI} software with an environment for developers and researches that integrates an interface to design their custom visualization and neurophysiological experiments, that also handles the signals acquisition, synchronizes markers and automatically creates ready-to-use databases, would comprise a very useful tool for the SPGR. Also, it is would imply a huge simplification for testing and designing \gls*{BCI} systems, guarantees a better repeatability, reduces failure points, and speeds up the debugging process.
 
 %======================================================================
 \section{Problem statement}\label{sec:problem} 
 
-Implementing a \gls*{BCI} system is an interdisciplinary activity that requires a set of specific and outstanding knowledges about communication systems, signals acquisition, instrumentation, clinical protocols, experiments validation and software development \cite{wolpaw2002brain}. A \gls*{BCI} software that functions property can be easily adapted to different experimental situations, and can facilitate the operation of entire research programs rather than the execution of an individual study. Then, the premise of existing open-source or commercial \gls*{BCI} software is to reduce this complexity, difficulty and cost \cite{nam2018brain}.
-
-Including “open” components increases the technology acceptation \cite{wessel2019switching}, reduces costs, enables collaborative development and impulses a community working around \gls*{BCI} with the purpose of extending this machinery for all general population \cite{wolpaw2012brain}. Following the main issues about \gls*{BCI} development systems lies around, (i) the EEG acquisition system used for \gls*{BCI} differs from standard or medical implementations. (ii) The specialized software is hard to modify according to specific needs, and (iii) the highly variational computational cost leads to the development of unstable and difficult to scale applications.
 
 %----------------------------------------------------------------------
-\subsection{Acquisition system requirements}
+\subsection{First Problem}
 
- Not all \gls*{EEG} acquisition systems are capable to use in \glspl*{BCI} systems. Even if the clinic devices are highly accurate, these implementations have a limited, or nonexistent, real-time data flow access; due to they mainly use is about diagnostic and offline analysis \cite{ordikhani2018augmenting}. Overall, low cost \gls*{EEG} headsets show greater design convenience, like the portability, for “real world” occupational use and capabilities to handle \gls*{BCI} tasks with varying degrees of success \cite{martinez2016low}. However, open-source software and occupational refinement may boost the potential of these systems. Besides, exists a need to implement a context-specific development to improve their base features \cite{larocco2020systemic}.
+ 
+%----------------------------------------------------------------------
+\subsection{Second Problem}
 
-A full set of devices, as shown in the Table \ref{table:bci_hardware}, but only one of the listed hardware is “open-source”, its freedom makes possible to modify the hardware and also access the firmware. Then, with all these options, it is possible and needed to develop custom drivers with high-level interactions. Even if the OpenBCI is the most featured option, the communication between the computer and the board is not always stable \cite{peterson2020feasibility} and their \gls*{GUI} does not provide the possibility of acquiring data under a particular \gls*{BCI} paradigm. Otherwise, their hardware base and \gls*{SDK} features give to this board a huge potential to implement a complete \gls*{BCI} system comparable with medical grade equipment \cite{frey2016comparison}.
 
 %----------------------------------------------------------------------
-\subsection{BCI software development issues}
+\subsection{Third Problem}
 
-About the software capable to handle \gls*{BCI} implementation a few of them are independent, for almost all cases is necessary, at least, a couple to perform a complete \gls*{BCI} paradigm, some of them will perform only acquisition, others will include data processing and some ones have stimuli deliver integrated with the main interface \cite{brunner2018bci}. The main reason to use over one software is basically because many of these tools, even when they can be useful, are not strictly for \gls*{BCI} but for behavioral sciences, neuroscience, psychology, psychophysics or linguistics. 
 
-The proprietary software compromise the extensibility\footnote{Extensibility is the ability of the software system to allow and accept the significant extension of its capabilities without major rewriting of code or changes in its basic architecture.} of their tools limiting the data transmission protocols or creating a close-list of compatible hardware \cite{lecuyer2008brain, palaus2017neural, bassolino2018non}. Although all these software offers greater ease of use through experimenter interfaces, they can be costly. The open source options still require high-level programming, technical skills and usually no one supports dedicated data acquisition \cite{nam2018brain}.
-
-%----------------------------------------------------------------------
-\subsection{Computational cost}
-
-The three most important tasks of a \gls*{BCI} system are signal acquisition, feature extraction and classification, and command translation or mapping \cite{sugiarto2009application}. These tasks demand a high performance computer running a lot of processes under, by general, nonreal-time operating systems. Distributing those three highly CPU resources consuming process in a distributed system will reduce computing complexity of an \gls*{BCI} framework, thus increasing reliability of overall system performance \cite{sugiarto2009application}. In a standard \gls*{EEG}-based medical experiment, there are at least three components of data abstraction which work simultaneously: data acquisition, signal database, and signal visualization \cite{alvarez2015clinical, beniczky2017standardized}. But in a close-loop \gls*{BCI} system, at least seven major components which are required to be synchronized: data acquisition, signals database/storage, feature processing (extraction and classification), visualization (temporal or spatial), command generation for actuators, command database and feedback acquisition \cite{sugiarto2009application}.
-
-The \gls*{BCI} systems usually not run under a real-time operating system, this means that the use of the resources will affect each one component of the system. Some paradigms in the field of \gls*{ERP} need high precision for the marker synchronization. For this purpose, the latency must be not only at low levels, also with small variabilities. This additional measure is called jitter. Both of them tell about the stability of a system and the capacity to handle more process. Under researching, centralized \gls*{BCI} implementation systems are susceptible to be taken down because of unexpected processing cost. 
-
-Therefore, some problems related to agile acquisition of \gls*{EEG} signals under multiple paradigms remain unsolved. For this reason, there arises the following research question: how to develop an independent \gls*{EEG}-based \gls*{BCI} monitoring framework that integrates real-time acquisition and visualization from audiovisual stimulation paradigms using OpenBCI?
 
 %======================================================================
-\section{State-of-the-art \gls*{BCI} systems}\label{sec:state_of_art}
+\section{State-of-the-art}\label{sec:state_of_art}
 
 %----------------------------------------------------------------------
-\subsection{BCI hardware}
+\subsection{First Problem}
 
-Recently, and because of the cheapening prototyping development, in the market a set of low-cost embedded systems for \gls*{EEG} acquisition. All these options normally include a \gls*{SDK}, that could be open-source or proprietary, this embedded devices commonly adds some flexibility (rigid or customizable electrode placement, multiple sampling rates, transmission protocols, wireless, among others).
-
-A lot of \gls*{EEG} acquisition systems have been developed in recent years. In order to name only the meaningful, a selection criteria have been considered; portable devices that are still available in the market and with a stable and significant base of active users are compared.
-
-\input{Cap1/Tables/bci_hardware}
-
-\subsubsection{Montages and electrodes placement}
-
-Table \ref{table:bci_hardware} compiles the features of the most relevant acquisition systems. About the electrode placement, devices with rigid placements are related to simple neurophysiological activities like concentration, drowsiness, stress, and Approach-Withdrawal pleasantness. In general, a task that only need booleans or low frequency data transmission, is provided in most cases this systems will not return the raw \gls*{EEG} data, instead, will return trends and only for a few channels (\textit{InteraXon Inc. Muse}\footnote{\href{https://choosemuse.com/}{https://choosemuse.com/}}, \textit{IMEC EEG Headset}\footnote{\href{https://www.imec-int.com/en/eeg}{https://www.imec-int.com/en/eeg}} or \textit{NeuroSky Mind Wave}\footnote{\href{https://store.neurosky.com/pages/mindwave}{https://store.neurosky.com/pages/mindwave}}). Other devices concentrate their distributions in the sensory-motor brain areas to perform motor-imagery task (\textit{Emotive EPOC+}\footnote{\href{https://www.emotiv.com/epoc/}{https://www.emotiv.com/epoc/}} or \textit{B-Alert x10}\footnote{\href{https://www.advancedbrainmonitoring.com/products/b-alert-x10}{https://www.advancedbrainmonitoring.com/products/b-alert-x10}}). Portable devices usually support wireless data transmission, bluetooth  (\textit{Enobio}\footnote{\href{https://www.neuroelectrics.com/solutions/enobio}{https://www.neuroelectrics.com/solutions/enobio}}, \textit{q.DSI 10/20}\footnote{\href{http://www.quasarusa.com/products_dsi.htm}{http://www.quasarusa.com/products_dsi.htm}}, \textit{NeXus-32}\footnote{\href{https://www.biofeedback-tech.com/nexus-32}{https://www.biofeedback-tech.com/nexus-32}}, \textit{Cognionic CGX MOBILE}\footnote{\href{https://www.cgxsystems.com/mobile-128}{https://www.cgxsystems.com/mobile-128}}), radiofrequency or Wi-Fi, . Only the wired and the Wi-Fi ones are capable to handle data transmission over 1 KHz, this kind of transmissions are associated with a large number of channels too (\textit{OpenBCI}\footnote{\href{https://openbci.caom/}{https://openbci.caom/}}, Cognionic Quick-20\footnote{\href{https://www.cgxsystems.com/quick-20m}{https://www.cgxsystems.com/quick-20m}}, \textit{ActiCap}\footnote{\href{https://brainvision.com/products/acticap-slim-acticap-snap}{https://brainvision.com/products/acticap-slim-acticap-snap}} or \textit{Biosemi ActiveTwo}\footnote{\href{https://www.biosemi.com/products.htm}{https://www.biosemi.com/products.htm}}). 
-
-It is possible to conclude that, even if the rigid electrode placements can be used for some \gls*{BCI} experiments, the flexible electrodes placement is the best option for general \gls*{BCI}. Also, devices that do not include a universal electrodes attachment provide standard montages, like the standard 10-20. Additionally, wired systems are related to high electrodes density. And more importantly, there are few “open” devices that show success in the market.
-
-\subsubsection{Licensing and freedoms}
-
-The licensing is one of the most important feature when considering the inclusion of a hardware into a real environment \cite{duan2021educational}. There are mainly three options, close-hardware with close restrictive licenses. In these cases, the developments can not be redistributed, commercialized or even shared for repeatability experiments \cite{mukherjee2019smart}. Second, close-hardware with open licenses, able the developers to build, modify, and share a complete acquisition system \cite{oellermann2022open}. Finally, similar to the second case, a device can be completely open. This means that not exists restriction about the development, all builds, configuration and modifications can be shared.
-
-So, a real-world solution generally includes “open” components to increase the technology acceptation \cite{powell2012democratizing,  legenvre2020open}, reduces costs, enables collaborative development, and impulses a community working around \gls*{BCI} with the purpose to extend this machinery for all general population \cite{wolpaw2012brain}.
 
 %----------------------------------------------------------------------
-\subsubsection{OpenBCI acquisition system}
+\subsection{Second Problem}
 
-On the side of the open-source hardware, we can find that \textit{OpenBCI} is one of the most flexible options \cite{laport2019comparative}. This board not only works with \gls*{EEG} also is suitable for \gls*{EMG} and \gls*{ECG} as well. The \footcite{OpenBCI Cyton}{https://openbci.com/} biosensing board comprises a \textit{PIC32MX250F128B} microcontroller, a \textit{ChipKIT UDB32-MX2-DIP bootloader}, a LIS3DH 3 axis accelerometer, and an \textit{ADS1299} analog-to-digital converter with eight input channels (expandable to 16) up to 16 kHz sample rate. Notably, the \gls*{EEG} channels can be configured as monopolar and bipolar, (and consequently sequentially), up to five external digital inputs and three analog inputs, and the data flow is accessible through a Wi-Fi interface using \gls*{TCP}. 
-
-Table \ref{table:openbci_configurations} summarizes \textit{OpenBCI} main configurations. \textit{RFduino} by default supports 250 \gls*{SPS} and 8 channels but with the \textit{Daisy} addition, it can expand up to 16 channels and with the \textit{Wi-Fi shield} the sample rate can increase up to 16 KHz. All channels can be configured as monopolar, bipolar and sequential.
-
-The \textit{OpenBCI} Cyton board had Python compatible drivers\footnote{\href{https://github.com/openbci-archive/OpenBCI_Python}{https://github.com/openbci-archive/OpenBCI\_Python}} but they are now deprecated in favor to a new family of drivers board agnostic, \footcite{BrainFlow}{https://brainflow.org/}. The main reason to develop a board-first drivers resides in take advantage of all low-level features and integrate them into the final drivers through high-level board configurations. 
-
-\input{Cap1/Tables/openbci}
 
 %----------------------------------------------------------------------
-\subsection{BCI software}
+\subsection{Third Problem}
 
-Acquiring brain signals is only one task for a \gls*{BCI} system, also it is necessary to carry out a lot of data processing and controlled experiments. So, still persist a segment of specialized software for developers and researchers that offer tools for this or similar purposes. Here, non-\gls*{BCI} software refers to tools that are not specifically designed for \gls*{BCI} environments but integrate features that can be used as well, usually related to neuroscience in general. Conversely, there is a few set of applications that integrates useful features for \gls*{BCI}, like data processing and, sometimes, close-loops.
 
-Table \ref{table:bci_software} summarizes the most common systems used for \gls*{BCI}, we can see 4 big groups: 
-(i) The ones with stimuli delivery, data analysis and are designed for close loops like \footcite{BCI2000}{https://www.bci2000.org/} \footcite{OpenViBE}{http://openvibe.inria.fr/} and \footcite{Neurobehavioral Systems Presentation}{https://www.neurobs.com/};
-(ii) Othes have the same features but their implementation is not focused to close the loop like \footcite{ePrime}{https://pstnet.com/products/e-prime/}, \footcite{OpenSesame}{https://osdoc.cogsci.nl/} and \footcite{g.BCISYS}{https://www.gtec.at/product/bcisystem/};
-(iii) And a few of them that only includes data analysis, typically the Matlab toolboxes like \footcite{EEGLAB}{https://sccn.ucsd.edu/eeglab/index.php} and \footcite{FieldTrip}{https://www.fieldtriptoolbox.org/};
-(iv) Some neuropsychology tools, since this is a precision task, only have in their interfaces a stimuli delivery like \footcite{Millisecond Inquisit Lab}{https://www.millisecond.com/products/inquisit6/laboverview.aspx} \footcite{Pychotoolbox-3}{http://psychtoolbox.org/}, \footcite{MonkeyLogic}{https://www.brown.edu/Research/monkeylogic/} and \footcite{PychoPy}{https://www.psychopy.org/}. Additionally, exists are multiple tools that are not mentioned here, except by \footcite{OpenBCI GUI}{https://github.com/OpenBCI/OpenBCI_GUI}, that like this, only works like a demonstration interface for their main hardware products.
-
-All previous systems have two additional features that no share relation with the main groups of focused users or the final implementation: the extensibility, the ability to create, modify and run custom experiments instead of the included by default; and the license distribution. However, these features are related to them. Free (as in freedom) licenses usually give to the user the tools, not only to configure, but rebuild the software itself. A system that does not give to the user the capability to extensibility generally is a proprietary system.  
-
-\input{Cap1/Tables/bci_software}
-
-%----------------------------------------------------------------------
-\subsubsection{Non-\gls*{BCI} related software}
-
-For the cases where the extensibility is a needed feature, some \gls*{BCI} implementation uses a set of applications simultaneously. Several psychology software can generate stimulus to be used in \gls*{BCI} paradigms, certainly there are a really fast and precise tools in this field, with graphical interfaces for easy design of experiments and audiovisual stimulation. Additionally, other kinds of software could be used to process data in real-time, this can be done through a private scripting interface, toolboxes or libraries, some programming languages like \textit{Matlab} \cite{martinez2021open, choudhury2019implementation} and \textit{Python} \cite{GramfortEtAl2013a} host dedicated environments to handle with the processing necessary for \gls*{BCI}.
-
-%----------------------------------------------------------------------
-\subsubsection{\gls*{BCI} as independent software}
-
-A independent software comprises the complete process of a \gls*{BCI} implementation. This is, from data acquisition to the real world command generation, also include in their interfaces a stimuli delivery feature, regardless of whether it is focused on research or production. But, Without the execution or third hardware for synchronization or divide the acquisition from the stimuli delivery.Exists a few of tools specifically designed for \gls*{BCI}, like \textit{BCI2000} \cite{schalk2004bci2000} and \textit{OpenViBE} \cite{renard2010openvibe}, these softwares are available under permissive licenses, and there is an active community of developers and users working with both of them. Then is the community who manages the addition of new acquisition systems and custom paradigms, even if the main interface does not support extensibility.
-
-The most popular tool focused on \gls*{BCI} is \textit{BCI200} which comes with default paradigms but their interface has been pointed out to be not very intuitive and its operation is difficult to understand in the first uses \cite{madrid2014brain}, although it is possible to add new paradigms, this ones must included as software contributions using their own libraries and not thought a built-int development interface. Other software widely used is \textit{OpenViBE}, This one includes a graphical drag-and-drop interface to perform data analysis with an extensive set of pre-defined algorithms. Its synchronous acquisition system is known for not only occasionally frozen the computer but also for adding delays to the streaming of the signals \cite{peterson2020feasibility}. Is easy to point that high-level tools require a lot computational resources.
-
-%----------------------------------------------------------------------
-\subsubsection{Marker synchronization}
-
-For both cases, \gls*{BCI} and non-\gls*{BCI} implementations, the data acquisition require be synchronized with the stimuli delivery. Multiple techniques are described \cite{wilson2010procedure} to make these measures in the instances where it is possible. In most cases is necessary a specialized laboratory equipment \cite{appelhoff2021we, razavi2022opensync} to calculate latencies and make corrections off-line, this approach satisfies the database generations, and for real-time analysis the system must be calibrated with a previously measured latency, this measurement is not constant and will depends on the operating system, even can be correlated with the processing techniques, so, after minimal system changes, the protocol to measure latencies must be executed. Other option comprise to create control signals \cite{davis2020stimulus} and perform corrections in real-time. This choice will only work on systems that can acquire external signals along the \gls*{EEG} channels.
-
-%----------------------------------------------------------------------
-\subsection{Real-time and computational cost handling}
-
-At present, most existing systems use high-quality algorithm to train the data off-line and run only the classification in real-time, consequently, a lot of work have been focused on reduce the computational cost to processing of signals to use in \gls*{BCI} \cite{netzer2020real, hasan2020computationally}. A constant discussion turns around the computational cost vs. the accuracy \cite{ahmadi2012brain}, because along with new processors, new costly analysis techniques also emerge. Consequently, the low-cost computational methods are always an aim \cite{changoluisa2020low}.
-
-Offline analysis may not represent major challenges, unless the amount of data to process is high. Cloud-based strategies (e.g., \textit{NeuroCAAS} \cite{abe2021neuroscience}) although they are very practical, they are not useful for the real-time requirement of the \gls*{BCI} systems.
-
-The real-time processing of large streams of neural data has become workable thanks to advances in computer processing power, in electronics such as microprocessors and \glspl*{FPGA}, and in specialized and open-source software \cite{potter2014closed}. In the field of neuroscience, \textit{RTBiomanager} \cite{muniz2009rtbiomanager} was designed to explore the use of real-time technology to build a set of novel experiments that combine different recording and stimulation techniques. In a similar context, purposes like \textit{RTHybrid} \cite{amaducci2019rthybrid} are not only efforts on real-time stimuli delivery precision but also on standardization methods.
 
 %======================================================================
 \section{Aims}\label{sec:objectives}
@@ -146,82 +43,26 @@ The real-time processing of large streams of neural data has become workable tha
 %----------------------------------------------------------------------
 \subsection{General aim}
 
-To develop a \gls*{EEG}-based \gls*{BCI} monitoring framework with real-time acquisition and visualization for audiovisual stimulation paradigms using \textit{OpenBCI}, focused to design, perform, and validate \gls*{BCI} systems in order to conduct experiments in all stages: design, testing, and production.
+
 
 %----------------------------------------------------------------------
 \subsection{Specific aims}
 
     \begin{itemize}
 
-        \item To implement a cross-platform library for \textit{OpenBCI} hardware that allows distributed functionalities, low-level board configurations, an acquisition protocol, data storage, and external inputs handler. %marker synchronization. 
+        \item  
         
-        \item To implement a distributed computing paradigm that allows to manage acquisition boards, acquires \gls*{EEG} signals through network, synchronise markers, measure latencies and delivers stimuli experiments into a decentralized environment using a \gls*{SBC} scheme.
+        \item 
 
-        \item To develop a independent interface with an \gls*{IDE} featured to configure the acquisition system, design real-time visualizations, execute timelock analysis, and perform stimuli delivery. 
+        \item 
 
 
     \end{itemize}
 
 %======================================================================
-
 \section{Outline and contributions}
 
-{\color {blue}
-In the following, we briefly introduce the main contributions of this thesis. They are summarized in The Figure \ref{FIGURA}
 
-A complete source code for the drivers OpenBCI-Stream\footnote{\href{https://github.com/UN-GCPDS/openbci-stream}{https://github.com/UN-GCPDS/openbci-stream}} and BCI-Framework\footnote{\href{https://github.com/UN-GCPDS/bci-framework}{https://github.com/UN-GCPDS/bci-framework}} are available in the public research group repository.
-}
-
-%----------------------------------------------------------------------
-\subsection{High-level acquisition drivers for OpenBCI}
-
-\textit{OpenBCI Cyton} is the most promising hardware to implement signals acquisition due to their low-level features and open-source design. However has an important lack of the drivers, there are not dedicated tools to handle acquisition signals and the current approach does not take advantage of all hardware capabilities. A qualified, and research-grade tool for \gls*{BCI} implementations must gather a set of features related with the quality of the signal and the reliability of the data acquired, this can be done implementing subroutines like the impedance measurement and marker synchronization, respectively.
-
-Bearing this in mind, we proposed to develop \textit{OpenBCI-Stream}, a high-level Python module for \gls*{EEG}/\gls*{EMG}/\gls*{ECG} acquisition and distributed streaming for \textit{OpenBCI Cyton} boards. This development is related to the first specific aim, and it is described in Chapter \ref{ch:chapter_2}.
-
-%----------------------------------------------------------------------
-
-\subsection{\gls*{BCI}-Framework}
-
-The effectiveness of a BCI system, and the ability of users to learn how to use it, depends on the ability of the system to acquire and process signals, to present stimuli in real-time, and on providing the user with consistent feedback with low latency and minimal jitter \cite{wilson2010procedure}.
-
-% %----------------------------------------------------------------------
-
-% \subsection{Distributed implementation}
-
-% %======================================================================
-
-% \section{\gls*{BCI} Paradigms}
-
-% %----------------------------------------------------------------------
-
-% \subsection{Motor Imagery}
-
-% %----------------------------------------------------------------------
-
-% \subsubsection{Arrows-based stimulus}
-
-% %----------------------------------------------------------------------
-
-% \subsubsection{Pacman-based stimulus}
-
-% %----------------------------------------------------------------------
-
-% \subsubsection{Transition-based stimulus}
-
-% %----------------------------------------------------------------------
-
-% \subsection{P300}
-
-% %----------------------------------------------------------------------
-
-% \subsection{Visuospatial working memory}
-
-% %----------------------------------------------------------------------
-
-% \subsection{Reward stop signal task}
 
 %======================================================================
-
 \section{Thesis structure}
-

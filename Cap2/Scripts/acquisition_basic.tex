@@ -1,7 +1,0 @@
-\begin{python}
-from openbci_stream.acquisition import Cyton
-
-openbci = Cyton('serial', endpoint='/dev/ttyUSB0', capture_stream=True)
-openbci.stream(15)  # capture 15 seconds of data
-openbci.eeg_time_series # Raw EEG is allocated in this class instance
-\end{python}
