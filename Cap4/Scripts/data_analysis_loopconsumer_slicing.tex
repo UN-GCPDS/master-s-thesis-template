@@ -1,0 +1,37 @@
+\begin{minted}
+[
+mathescape=true, 
+xleftmargin=1cm, 
+xrightmargin=1cm, 
+fontsize=\scriptsize, 
+baselinestretch=1.2,
+python3=true,
+%  samepage=true,
+% linenos=true,
+highlightlines={11-12},
+style=emacs,
+highlightcolor=UN_primary!20,
+]
+{python}
+from bci_framework.extensions.data_analysis import DataAnalysis, marker_slicing
+
+class Analysis(DataAnalysis):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Needs to be greater than the duration of the slice.
+        self.create_buffer(seconds=30, aux_shape=3)
+        self.slicing()
+
+    @marker_slicing(['Right', 'Left'], t0=-2, duration=6)
+    def slicing(self, eeg, aux, timestamp, marker):
+
+        print(eeg.shape)
+        print(aux.shape)
+        print(timestamp.shape)
+        print(marker)
+        print()
+
+if __name__ == '__main__':
+    Analysis()
+\end{minted}

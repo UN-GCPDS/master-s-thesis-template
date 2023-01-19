@@ -1,0 +1,15 @@
+\begin{python}
+@loop_consumer('eeg')
+def stream(self, data):
+    eeg, aux = data
+
+    ch0 = eeg[0]  # first eeg channel
+    self.line.set_ydata(ch0)
+    self.axis.set_ylim(ch0.min(), ch0.max())
+
+    time = range(len(ch0))  # time axis
+    self.line.set_xdata(time)
+    self.axis.set_xlim(time[0], time[-1])
+
+    self.feed()
+\end{python}

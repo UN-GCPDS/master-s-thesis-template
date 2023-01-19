@@ -1,0 +1,162 @@
+\chapter{High-level acquisition drivers for OpenBCI}\label{ch:chapter_2}
+
+This chapter exposes the design and development of a driver that comprises a set of scripts that deal with the configuration and connection with the board and is also compatible with both connection modes supported by \textit{OpenBCI Cyton}: the default RFduino (through serial dongle) and Wi-Fi (with the OpenBCI Wi-Fi Shield). The drivers are a stand-alone library that can access the acquisition board from three different endpoints: 
+(i) a \gls*{CLI} that serves simple instructions to configure, start and stop data acquisition, debug stream status, and register events markers; 
+(ii) a Python Module with high-level instructions and asynchronous acquisition; 
+(iii) a remote object-proxying that uses \Gls*{RPyC} for distributed implementations.
+
+%======================================================================
+\section{Drivers architecture}
+
+A full-featured driver for \textit{OpenBCI Cyton} will need solid basic features related to a high-level board configuration, acquisition protocol, and external inputs handler. These three components are essential for developing generic tasks that almost all BCI systems must implement as impedance measurement, markers synchronization, and data storage, to mention a few. Additionally, the integration of components like flexibility, scalability, and a well-designed \gls*{UX} that lets the user focus on the data stream manipulation and consumption, rather than the acquisition and connection, would impact positively on the development of custom implementation that satisfies specific requirements. To achieve this, it must take full advantage of the current and official SDK\footnote{\href{https://docs.openbci.com/Cyton/CytonSDK/}{docs.openbci.com/Cyton/CytonSDK/}} distributed by \textit{OpenBCI}.
+
+\input{Cap2/Figures/drivers}
+
+%----------------------------------------------------------------------
+\subsection{OpenBCI SDK}
+
+The \textit{Cyton} board is based on an \textit{ADS1299}, a 24-bit analog-to-digital converter designed by Texas Instruments for bio-potential measurements. \textit{OpenBCI} has built its acquisition system over a \textit{ChipKIT} development board with their respective firmware. The \gls*{SDK} defines an \textit{instruction set} based on Unicode character exchange, e. g., to turn \textit{on} channel 1, character \quot{’1’} (equivalent to the integer \quot{49}) must be sent, and to turn it \textit{off}, character \quot{’!’} (equivalent to the integer \quot{33}). This \textit{instruction set} adds additional commands over Wi-Fi mode. The protocols that implement this command-based intercommunication with the board are serial for the USB dongle and \gls*{TCP} for the Wi-Fi interface. Additionally, some commands for the Wi-Fi module are sent to the board through plain HTTP protocol.
+ 
+The main firmware version used is later than \textit{v3.0.0}, but it is known that the impedance measurement does not work correctly on this version, and although there is a pull request that solves this issue\footnote{\href{https://github.com/OpenBCI/OpenBCI_Cyton_Library/pull/95}{https://github.com/OpenBCI/OpenBCI_Cyton_Library/pull/95}}, the \textit{OpenBCI} team has done nothing about it. It is possible to use official versions, but the board must be reset every time before the impedance measurement and never change the sampling frequency on run-time; this is the only firmware-level modification, optional but recommended, to use the developed drivers. 
+
+%----------------------------------------------------------------------
+\subsubsection{Data formats}
+
+\input{Cap2/Tables/binary_package}
+\input{Cap2/Tables/aux}
+\input{Cap2/Tables/aux_timestamp_accel}
+
+The type of data to send to the acquisition board is Unicode only; however, the board has three types of responses: Unicode, human-readable strings, and binary. There are no issues about the human-readable strings, but there are usually errors and generic responses to commands. The responses on Unicode are for internal registers, i. e., responses that use the same Unicode command to report the actual configuration. The data stream, the package that contains the EEG time series along with the auxiliary data, uses a binary format of 33 bytes.
+
+Table \ref{table:binary_package} shows the distribution of these 33 bytes. The header byte defines the start of the sequence, which is always \quot{0xa0}. The second one is an incremental byte from \quot{0x00} - \quot{0xff}. The third set of 24 bytes contains the value for 8 channels in 24-bit signed format. The fourth set of 6 bytes encodes the auxiliary data. Finally, the footer byte defines the type of auxiliary data streamed. Table \ref{table:auxiliar_data} describes the type of data that the auxiliary data could contain: they are basically accelerometers, external raw inputs, and timestamps. For the case where the timestamp is merged with accelerometer data, Table \ref{table:timestamp_accel} defines the codification mode, \textit{when}, and \textit{where} to find the acceleration value.
+
+The streaming uses different data formats to package the information, 24-bit signed for \gls*{EEG} data, 16-bit signed for accelerometer data, and 32-bit unsigned for timestamps.
+
+%----------------------------------------------------------------------
+\subsection{Board interface}
+
+The board interface refers to the physical way and the protocol used to configure the board and how the data stream is accessed. \textit{OpenBCI} supports two interfaces: Serial and Wi-Fi.
+
+%----------------------------------------------------------------------
+\subsubsection{Serial setup}
+
+The default connection for \textit{OpenBCI} is called serial because the computer will recognize the board as a serial device; however, it is wireless since the interface includes a USB-serial adapter that uses the proprietary \textit{RFDuino} interface. This interface is a Bluetooth-modified protocol to achieve the highest data rates. Using this interface, the maximum sample rate for 8 channels is 250. Since the computer recognizes the board as a serial device, communication is based on simple \quot{read(bytes)} and \quot{write(bytes)} commands.
+
+%----------------------------------------------------------------------
+\subsubsection{Wi-Fi interface}
+
+It is possible to increase the \gls*{SPS} up to 16k with an additional board, the Wi-Fi Shield; nevertheless, these rates are not helpful for \gls*{BCI} purposes; instead, the rates of around 1 or 2 k\gls*{SPS} are easier to handle for the system. Two protocols can be used over Wi-Fi, \Gls*{MQTT} and \gls*{TCP}. For simplicity, the \gls*{TCP} was chosen over the other since the \gls*{MQTT} protocol is just a reimplementation of the \gls*{TCP} one.
+
+%----------------------------------------------------------------------
+\section{Drivers development}
+
+The development of the drivers is entirely in Python and is focused on establishing three significant bases: the configuration of the board, the data acquisition, and the external inputs handler.
+
+%----------------------------------------------------------------------
+\subsection{\Gls*{API}}
+
+The main module is called \quot{openbci\_stream} and has three main submodules: \quot{acquisition}, to handle the data stream and the configuration board; \quot{daemons}, to automatize the acquisition based on operating system commands; and \quot{utils}, to accommodate the utility scripts responsible for \gls*{CLI}, filters, storage, and visualizations. 
+
+The Cyton board is initialized with the default configurations listed in Table \ref{table:openbci_default}, so the acquisition can be easily initialized with the following instructions:
+
+\input{Cap2/Scripts/acquisition_basic}
+\input{Cap2/Tables/openbci_default}
+
+In this example, we are using the \textit{Cyton} board over a USB-serial interface. Since one of the main features of this module is to guarantee real-time acquisition, the full \quot{timestamp} of the acquired data is also available on the \quot{timestamp\_time\_series} instance:
+
+\input{Cap2/Scripts/acquisition_timestamp}
+
+%----------------------------------------------------------------------
+\subsubsection{High-level board configurations}
+A high-level library is obtained through the automatization of low-level commands. The \quot{CytonConstants} class collects all \gls*{SDK} definitions into attributes using constant notation. For example, this is the Unicode used to configure the sample rates:
+
+\input{Cap2/Scripts/acquisition_sample_rate}
+
+Additionally, the high-level methods use multiple input shapes as valid parameters, e. g., the \quot{CytonBase.command}. They also used to write commands into the firmware and can accept the raw Unicode, the \quot{CytonConstants}, or the name in string format. This flexibility is appreciated at the time of implementing high-level interfaces.
+
+\input{Cap2/Scripts/cytonbase}
+
+%----------------------------------------------------------------------
+\subsection{Data acquisition and deserialization}
+
+This task must be executed in a separate process to guarantee an efficient acquisition and, in addition, an optimal data structure based on \quot{multiprocessing.managers.SyncManager.Queue} is implemented in this task to access the data through a different process. Regardless of the interface selected, serial or Wi-Fi, the data format transmission can be configured as \textit{RAW}, binary or formatted, using \gls*{JSON}. The \textit{JSON} format has the advantage that the data is already deserialized, but the disadvantage is that the transmitted packages are variable in size. Conversely, \textit{RAW} formats fix the package size problem, but a deserialization process is necessary to access the real data. This last format was selected because of the fast transmission and the detection of lost packets. 
+
+Table \ref{table:eeg_data_distribution} shows how, in 24 bytes, the 8 channels of 24-bit signed, each one, are compressed. This conversion is expensive for \textit{Python} since there is no native 24-bit signed format. For 8 channels, the data has no singular conditions, but for 16 channels, a specific format is implemented to interpret the 16 channels using the same amount of data transmitted for 8 channels. Table \ref{table:eeg_data_package} describes the process for unpacking 16 channels for only 8 transmitted at a time. Basically, the \textit{Cyton} (first 8 channels) and the \textit{Daisy} (last 8 channels) transmissions are interleaved, and the empty blocks are completed by the mean of the last two transmissions from the same board.
+
+\input{Cap2/Tables/eeg_data}
+\input{Cap2/Tables/daisy}
+\input{Cap2/Figures/deserialization}
+
+After acquiring the binary data, a deserialization process is necessary. This process consists of converting the bytes to values with physical units, i. e., $\mu V$ for EEG and $g$ for acceleration. Once the stream is started, a continuous flow of binary data is stored in a queue-based data structure. This data is processed to extract the EEG and the AUX data. A few steps must be implemented to deserialize the binary package:
+(i) select a block of binary data,
+(ii) prepend the offset data to the block,
+(iii) find the bytes header (\quot{0xa0}) and slice the block with this byte as the first element and the following are 33 bytes (at this point, the data is a list of arrays of maximum 33 elements),
+(iv) crop the block of binary data to ensure that the length for all elements is 33, and store the offset data to complete the next block of binary data,
+(v) create a matrix of shape \quot{(33,N)}.
+
+Now, the data structure on a shape \quot{(33,N)} must meet a set of conditions: (i) all the first columns must contain the \quot{0xa0} value, (ii) the second column must be incremental, and (iii) the last column must be in format \quot{0xcX}, all with the same value. These conditions are described in Table \ref{table:binary_package}. All rows outside of these rules must be removed. Figure \ref{figure:deserialization} shows graphically how a corrupted data set is cleaned and contextualized to deserialize the main structures.
+
+%----------------------------------------------------------------------
+\subsection{External inputs acquisition (Boardmodes)}\label{subsec:boardmodes}
+
+For \textit{OpenBCI}, it is possible to configure the content of the Auxiliary data, and by default, it is the accelerometer data; nevertheless, there are different signal types: digital, analog, or marker. In marker mode, a value can be inserted programmatically into the time series; and for digital and analog mode, a set of physical input ports are available to insert signals. The external input acquisition is a significant feature since the capability to acquire signals alongside the EEG implies that the system can be used to measure latencies itself \cite{wilson2010procedure}.
+
+Programmatically, the boardmode can be changed at runtime through the method \quot{command}:
+
+\input{Cap2/Scripts/boardmodes}
+
+Table \ref{table:openbci_configurations} shows the number of analog and digital inputs available for each \textit{OpenBCI} configuration. In default mode, the Auxiliary data will contain three-time series, one for each axis \quot{(x,y,z)}, and for marker mode, a single time series with zeros and the value of the markers as singular points. 
+
+%----------------------------------------------------------------------
+\section{Data storage}
+
+The feature of storing acquired data for posterior analysis is fundamental for research. Feeding the state-of-art with public databases must be considered a community objective since collaborative efforts have brought \gls*{BCI} systems to the actual level.
+
+The ideal format for data storage must meet a set of requirements: 
+(i) it must not be RAM-based since the data appending process must read the packages, and these must be written to disk at that moment;
+(ii) must integrate a method to save metadata information alongside the time series, where this metadata can be used to describe things like the montage, the experiment, the engineer, and events, among others;
+(iii) the reading process must support partial access instead of allocating the complete archive in RAM;
+(iv) must be exportable to multiple formats.
+
+%----------------------------------------------------------------------
+\subsubsection{\gls*{HDF}}
+
+\gls*{HDF} was the format chosen for the default storage of EEG data, as it meets all previous requirements; however, there are some significant issues\footnote{https://cyrille.rossant.net/moving-away-hdf5/}. The most relevant one is related to the corruption risks, but this is a shortcoming that can be solved pragmatically with the implementation. Other reported problems are related to the performance, bugs, philosophy, and implementation, but these do not compromise the use of this specific application.
+
+%----------------------------------------------------------------------
+\subsubsection{Custom data storage handler}
+
+This data handler uses \textit{PyTables}, which is built on the top of the \textit{HDF5} library using the \textit{Python} language and the \textit{NumPy} package. An important feature of \textit{PyTables} is that it optimizes memory and disk resources, so data takes up much less space (especially, if on-flight compression is used) than other solutions such as relational or object-oriented databases \cite{Welcomet25:online}.
+
+The main modules to manage the proposed file format resides on the \quot{HDF5Reader} and \quot{HDF5Writer} classes, for example:
+
+\input{Cap2/Scripts/hdf_reader}
+
+Or using \textit{Python} context managers:
+
+\input{Cap2/Scripts/hdf_reader_context}
+
+The \quot{HDF5Writer} is used internally to create the \gls*{HDF}5 file with these features. At runtime, a single script must be implemented isolated to ensure the storage from the processing and acquisition.
+
+%----------------------------------------------------------------------
+\subsubsection{MNE compatibility}
+
+The \quot{HDF5Reader} class has a method to generate \footcite{mne.EpochsArray}{https://mne.tools/stable/generated/mne.EpochsArray.html}, this method needs a \textit{tmin} (i. e., the time in seconds before the stimulus), the \textit{duration} of the epoch, and the desired \textit{markers}.
+
+\begin{python}
+reader = HDF5Reader('sample-eeg.h5')
+epochs = reader.get_epochs(tmin=-2, duration=6, markers=['RIGHT', 'LEFT'])
+\end{python}
+
+%======================================================================
+\section{Summary and discussion}
+
+\input{Cap2/Tables/acuisition_drivers}
+
+At the time of initiating the development of our drivers, four tools compatible with \textit{OpenBCI Cyton} were available, as shown in Table \ref{table:acquisition_drivers}. However, \footcite{OpenBCI Python}{https://github.com/openbci-archive/OpenBCI\_Python}, \footcite{pyOpenBCI}{https://github.com/openbci-archive/pyOpenBCI}, and \footcite{OpenBCI LSL}{https://github.com/openbci-archive/OpenBCI\_LSL}, all developed officially by \textit{OpenBCI}, are now deprecated, but at the time, they served as references and templates for our implementation. 
+
+Currently, only two implementations are supported to work with \textit{OpenBCI Cyton}, \footcite{BrainFlow}{https://brainflow.org/}, and our drivers \footcite{OpenBCI Stream}{https://openbci-stream.readthedocs.io/}. \textit{Brainflow} is recognized by the broadest hardware support, as more than 11 boards are now compatible. However, this can also be a disadvantage since developing device-agnostic applications to target more boards neglects the acquisition board’s capabilities, for example, the features in \textit{OpenBCI Stream} related to the \hyperref[subsec:boardmodes]{Boardmodes}, the sampling rate, the marker synchronization, and the \hyperref[subsec:impedance-measurement]{Impedance measurement} are implemented purely with in-depth handling of the hardware capabilities.
+
+% The transmission and distribution of the acquired data information are missing in this chapter; this process requires a set of scripts/daemons that run in the background in an isolated process. These features are described in \hyperref[ch:chapter_3]{Chapter 3} to define the distributed paradigm implemented.
+
+% \textit{OpenBCI Stream} is the only solution supporting OpenBCI and taking advantage of its full features.

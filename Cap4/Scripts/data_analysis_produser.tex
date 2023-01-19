@@ -1,0 +1,21 @@
+\begin{python}
+# Command
+self.send_command('MyCommand', value=45)
+
+# Annotation
+self.send_annotation('The subject yawn', duration=5)
+
+# Feedback
+feed = {'var1': 0,
+        'var2': True,
+        'var3': 'Right',
+       }
+self.send_feedback(**feed)
+
+# send_feedback method are keyword arguments only
+self.send_feedback(a=0, b=2.3, c='Left')
+
+# Custom topic
+self.generic_produser('my_topic', my_data)
+
+\end{python}

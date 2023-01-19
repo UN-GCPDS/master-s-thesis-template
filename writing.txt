@@ -1,0 +1,10 @@
+A lot of EEG acquisition systems have been developed in recent years, in order to name the meaningful ones the devices with more user, available in the market or with constant revisions and upgrades will be considered. Unlike software, the vast majority of products are released under closed licenses. 
+
+Some popular devices like IMEC\cite{}, Muse\cite{}, Neurosky\cite{} and B-alert x10\cite{}, Cogniomics-24\cite{}, Emotiv EPOC+ \cite{} works rigid electrodes placements, these conditions are not suitable for BCI purposes, some of these devices pointed to a single task detections, (sleep, stress, focus…) and not to serve a constant data flow. 
+
+Other acquisitions systems like Enobio\cite{}, q.DSI 10/20\cite{}, Nexus-32\cite{} and Quick-20\cite{} can be used with a multiple type of electrodes and custom placements, these systems require their own software and SDK in order to perform a real-time acquisition, also, in some cases a BCI ready-to-use software is sold as a different product. This kind of hardware, though, can be used for research purposes the restrictions about the redistribution and modifications (of software and hardware), the high licensing costs, 
+
+make it not recommendable in order to impulse a community working around BCI with the purpose to extend this technology for all general population \cite{}.
+
+ActiCap
+

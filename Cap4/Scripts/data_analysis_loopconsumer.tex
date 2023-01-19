@@ -1,0 +1,29 @@
+\begin{minted}
+[
+mathescape=true, 
+xleftmargin=1cm, 
+xrightmargin=1cm,
+fontsize=\scriptsize, 
+baselinestretch=1.2,
+python3=true,
+%  samepage=true,
+% linenos=true,
+highlightlines={6-10},
+style=emacs,
+highlightcolor=UN_primary!20,
+]
+{python}
+from bci_framework.extensions.data_analysis import DataAnalysis, loop_consumer
+
+class Analysis(DataAnalysis):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stream()
+
+    @loop_consumer('eeg', 'marker')
+    def stream(self):
+        print('Incoming data...')
+
+if __name__ == '__main__':
+    Analysis()
+\end{minted}

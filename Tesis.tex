@@ -1,0 +1,108 @@
+\input{Header}
+
+% Abbreviations
+\newacronym{BCI}{BCI}{brain-computer interface}
+\newacronym{SDK}{SDK}{software development kit}
+\newacronym{GUI}{GUI}{graphical user interface}
+\newacronym{EEG}{EEG}{electroencephalography}
+\newacronym{EMG}{EMG}{electromyography}
+\newacronym{ECG}{ECG}{electrocardiography}
+\newacronym{BLE}{BLE}{bluetooth}
+\newacronym{RF}{RF}{radiofrequency}
+\newacronym{MQTT}{MQTT}{message queue telemetry transport}
+\newacronym{JSON}{JSON}{JavaScript object notation}
+\newacronym{TCP}{TCP}{transmission control protocol}
+\newacronym{SBC}{SBC}{single-board computer}
+\newacronym{IDE}{IDE}{integrated development environment}
+\newacronym{ERP}{ERP}{event-related potential}
+\newacronym{HPC}{HPC}{high-performance computing}
+\newacronym{FPGA}{FPGA}{field-programmable gate array}
+\newacronym{CLI}{CLI}{command-line interface}
+\newacronym{RPyC}{RPyC}{remote Python call}
+\newacronym{RTP}{RTP}{real-time protocol}
+\newacronym{SPS}{SPS}{samples per second}
+\newacronym{API}{API}{application programming interface}
+\newacronym{HDF}{HDF}{hierarchical data format}
+\newacronym{FFT}{FFT}{Fast Fourier transform}
+\newacronym{LDR}{LDR}{light-dependent resistor}
+\newacronym{UX}{UX}{user experience}
+\newacronym{ADC}{ADC}{analog-to-digital converter}
+\newacronym{VWM}{VWM}{Visuospatial Working Memory}
+\newacronym{MI}{MI}{Motor imagery}
+\newacronym{RSST}{RSST}{Reward Stop Signal Task}
+\newacronym{SPRG}{SPRG}{Signal Processing and Recognition Group}
+
+% \newacronym{}{}{}
+% \newacronym{}{}{}
+
+
+\makeglossaries
+
+\begin{document}
+
+    \begingroup
+        \pagenumbering{roman}
+        
+        % \pagestyle{fancy}
+        % \pagestyle{plain}
+        
+        \include{Protocol/Titles}
+        \include{Protocol/Acknowledgements}
+        \include{Protocol/Abstract}
+        \include{Protocol/Resumen}
+        
+        % Contents
+        \cleardoublepage
+        \tableofcontents
+        \addcontentsline{toc}{chapter}{Contents}
+    
+        % List of figure
+        \cleardoublepage
+        \listoffigures
+        \addcontentsline{toc}{chapter}{List of figures}
+        
+        % List of tables
+        \cleardoublepage
+        \listoftables
+        \addcontentsline{toc}{chapter}{List of tables}
+        
+        % Abbreviations
+        \cleardoublepage
+        \printglossary[type=\acronymtype, title=Abbreviations]
+        \glsresetall
+        \cleardoublepage
+    \endgroup
+        
+        
+    % Capitules
+    \pagenumbering{arabic}
+    % \include{Cap1/Cap1}
+    \include{Cap1/Cap1-Nessa}
+    \include{Cap2/Cap2-Nessa}
+    \include{Cap3/Cap3}
+    \include{Cap4/Cap4}
+    
+    % IDK why but this line must be here
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+    
+    \include{Cap5/Cap5}
+    
+    % Appendix
+    \renewcommand*{\TheAlphaChapter}{\Alph{chapter}}
+    \begin{appendices}
+        \include{Appendix/python_modules/systemd_service}
+        \include{Appendix/python_modules/qt_material}
+        \include{Appendix/python_modules/matplotlib_figurestream}
+        \include{Appendix/python_modules/radiant_framework}
+        \include{Appendix/databases/motor_imagery}
+        \include{Appendix/databases/working_memory}
+        \include{Appendix/paradigms/rsst_paradigms}
+        % \include{Appendix/paradigms/band_neurofeedback}
+    \end{appendices}
+    
+    % Bibliography
+    \addcontentsline{toc}{chapter}{Bibliography}
+    \bibliographystyle{ieeetr}
+    \bibliography{References}
+
+\end{document}

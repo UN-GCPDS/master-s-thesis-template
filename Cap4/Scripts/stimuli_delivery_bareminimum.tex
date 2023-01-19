@@ -1,0 +1,36 @@
+\begin{minted}
+[
+mathescape=true, 
+xleftmargin=1cm, 
+xrightmargin=1cm,
+fontsize=\scriptsize, 
+baselinestretch=1.2,
+python3=true,
+%  samepage=true,
+% linenos=true,
+highlightlines={3-5,12-17},
+style=emacs,
+highlightcolor=UN_primary!20,
+]
+{python}
+from bci_framework.extensions.stimuli_delivery import StimuliAPI
+
+# Brython modules
+from browser import document, html
+from browser.widgets.dialog import InfoDialog
+
+class StimuliDelivery(StimuliAPI):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        document.clear()
+
+        # main brython code
+        document.select_one('body') <= html.H3('Hello world')
+
+        button = html.BUTTON('click me')
+        button.bind('click', lambda evt: InfoDialog('Hello', 'world'))
+        document.select_one('body') <= button
+
+if __name__ == '__main__':
+    StimuliDelivery()
+\end{minted}

@@ -1,0 +1,7 @@
+\begin{python}
+@loop_consumer('marker')
+def stream(self, data, topic, frame):
+    marker_value = data
+
+    print(f'Incoming marker: {marker_value}')
+\end{python}

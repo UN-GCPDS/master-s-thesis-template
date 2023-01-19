@@ -1,0 +1,24 @@
+\begin{minted}
+[
+mathescape=true, 
+xleftmargin=1cm, 
+xrightmargin=1cm,
+fontsize=\scriptsize, 
+baselinestretch=1.2,
+python3=true,
+%  samepage=true,
+% linenos=true,
+highlightlines={8},
+style=emacs,
+highlightcolor=UN_primary!20,
+]
+{python}
+from bci_framework.extensions.data_analysis import DataAnalysis
+
+class Analysis(DataAnalysis):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+if __name__ == '__main__':
+    Analysis(enable_produser=True)
+\end{minted}

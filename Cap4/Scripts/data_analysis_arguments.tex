@@ -1,0 +1,14 @@
+\begin{python}
+@loop_consumer('eeg', 'aux')
+def stream(self, data, topic, frame, latency):
+    print(f'Incoming data #{frame}')
+    
+    match topic:
+        case 'eeg':
+            print(f'EEG{data.shape}')
+        case 'aux':
+            print(f'AUX{data.shape}')
+    
+    print(f'Topic: {topic}')
+    print(f'Latency: {latency}')
+\end{python}

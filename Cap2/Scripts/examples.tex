@@ -1,0 +1,151 @@
+\subsubsection{USB-Serial dongle}
+
+\textit{OpenBCI Cython} defaults interface is serial, then the endpoint is a serial port.
+\begin{python}
+from openbci_stream.acquisition import Cyton
+openbci = Cyton('serial', endpoint='/dev/ttyUSB0', capture_stream=True)
+\end{python}
+
+%======================================================================
+\subsubsection{Wi-Fi shield}
+
+The Wi-Fi shield supports two modes: slave and access point, whatever mode the endpoint is an IP address.
+\begin{python}
+from openbci_stream.acquisition import Cyton
+openbci = Cyton('wifi', endpoint='192.68.1.113', capture_stream=True)
+\end{python}
+
+%======================================================================
+\subsubsection{Synchronous mode}
+
+The synchronous mode it implies blocking call, the connection must be closed with \quot{openbci.close()}.
+\begin{python}
+from openbci_stream.acquisition import Cyton
+
+openbci = Cyton('wifi', endpoint='192.68.1.113', capture_stream=True)
+openbci.stream(15)
+\end{python}
+
+%======================================================================
+\subsubsection{Asynchronous mode}
+
+Under asynchronous mode the acquisition runs in background (using subprocess), then, others tasks can be performed in parallel.
+\begin{python}
+from openbci_stream.acquisition import Cyton
+
+openbci = Cyton('wifi', endpoint='192.68.1.113', capture_stream=True)
+openbci.start_stream()
+time.sleep(15)  # collect data for 15 seconds
+openbci.stop_stream()
+\end{python}
+
+%======================================================================
+\subsubsection{Test mode}
+
+The test mode generates synthetic square waveforms.
+\begin{python}
+from openbci_stream.acquisition import Cyton
+from openbci_stream.acquisition import CytonConstants as CONST
+
+openbci = Cyton('wifi', endpoint='192.68.1.113', capture_stream=True)
+
+openbci.command(CONST.TEST_1X_FAST)
+# openbci.command(CONST.TEST_1X_SLOW)
+# openbci.command(CONST.TEST_2X_FAST)
+# openbci.command(CONST.TEST_2X_SLOW)
+\end{python}
+
+%======================================================================
+\subsubsection{Set sample frequency and transmission package size}
+
+The sample frequency for the Wi-Fi interface can be configured up to 16 kSPS. In this example the sample frequency was configured to acquire at 1 KSPS and the streaming package size at 250, this means that a package of 250 samples will be streamed each 250 ms.
+\begin{python}
+from openbci_stream.acquisition import Cyton
+from openbci_stream.acquisition import CytonConstants as CONST
+
+openbci = Cyton(
+    'wifi',
+    endpoint='192.68.1.113',
+    capture_stream=True,
+    streaming_package_size=250,
+)
+
+# openbci.command(CONST.SAMPLE_RATE_250SPS)
+# openbci.command(CONST.SAMPLE_RATE_500SPS)
+openbci.command(CONST.SAMPLE_RATE_1KSPS)
+# openbci.command(CONST.SAMPLE_RATE_2KSPS)
+
+\end{python}
+
+
+% %======================================================================
+% \subsubsection{Context managers}
+
+% \begin{python}
+% from openbci_stream.acquisition import OpenBCIConsumer
+% import time
+
+% with OpenBCIConsumer(
+%     mode='serial',
+%     endpoint='/dev/ttyUSB0',
+%     streaming_package_size=250) as (stream, openbci):
+%     t0 = time.time()
+    
+%     for i, message in enumerate(stream):
+%         if message.topic == 'eeg':
+%             print(f"{i}: received {message.value['samples']} samples")
+%             t0 = time.time()
+%             if i == 9:
+%                 break
+% \end{python}
+
+% %======================================================================
+% \subsubsection{Write data}
+
+% \begin{python}
+
+% \end{python}
+
+% %======================================================================
+% \subsubsection{Read data}
+
+% \begin{python}
+
+% \end{python}
+
+%======================================================================
+\subsubsection{Impedance measurement}
+
+
+\begin{python}
+from openbci_stream.acquisition import Cyton
+from openbci_stream.acquisition import CytonConstants as CONST
+import numpy as np
+import time
+
+def get_z(v):
+    rms = np.std(v)
+    z = (1e-6 * rms * np.sqrt(2) / 6e-9) - 2200
+    if z < 0:
+        return 0
+    return z
+
+openbci = Cyton('wifi', endpoint='192.68.1.113', capture_stream=True)
+
+# configure the lead-off impedance for the ADS1299
+openbci.command(CONST.SAMPLE_RATE_250SPS)
+openbci.command(CONST.DEFAULT_CHANNELS_SETTINGS)
+openbci.leadoff_impedance(
+    range(1, 9),
+    pchan=CONST.TEST_SIGNAL_NOT_APPLIED,
+    nchan=CONST.TEST_SIGNAL_APPLIED,
+)
+
+# non-blocking call
+openbci.start_stream()  
+while True:
+    time.sleep(1)  # collect data for 1 seconds
+    #  Calculate the impedance for the last second
+    z = get_z(openbci.eeg_time_series[-1000:][0])  # first channel
+    print(f'{z/1000:.2f} kOhm')
+\end{python}

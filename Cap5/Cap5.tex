@@ -1,0 +1,53 @@
+\chapter{Final remarks}\label{ch:chapter_5}
+
+%======================================================================
+\section{Conclusions and discussion}
+
+% outline
+For this work were identified all components needed to get flexible, scalable, and integral  BCI system. Flexibility to adapt and modify experiments, make fast changes in runtime, and process data in real-time; Scalability in the execution of data analysis distributing expensive task without affect the main acquisition process; A framework that integrate a full environment with almost all tools to develop complete research-grade BCI systems.
+
+% summary cap1
+In order to guarantee all promised high features, a single board (\textit{OpenBCI Cyton}) was choose to be configured and controlled in deep. Then, a brand new set of drivers was developed with the capability to take advantage of the hardware and all benefits of the \textit{ADS1299}. The acquisition system support multiple sampling rate, packaging size, communication protocol, and free electrodes placement for use not only for \gls*{EEG} but \gls*{ECG} and \gls*{EMG}. Additional to this, a unique feature to synchronize markers had been included using the low levels characteristics of the acquisition board.
+
+% summary cap2
+Unlike the centralized systems that share the resources as well the stability. The distributed systems allow the controlled execution of a set of critical process like: The acquisition, the implementation of a dedicated system to handle the interaction with the OpenBCI hardware brings to the system robustness; the stimuli delivery, that allows pull apart the rendering and audiovisual generation to be able to stream markers and annotations in accurate times; and real-time data analysis, from experimental and not debugged scripts without the worry of causing exceptions in the system. Although it is a distributed system, the real-time streaming is guaranteed, the latency and the jitter keeps in accepted ranges for closed-loop \gls{BCI} systems, and acquisition methodology ensure that the bad sampling data can be labeled and processed as appropriate. 
+
+% summary cap3
+The development environment contribute with a full \gls*{API} and an automatic background to configure common task in the field of \gls{BCI} data processing like: buffering, sub-sampling and real-time trials slicing; an easy-to-use set of widgets to build dashboards for stimuli delivery; an environment to develop and debug custom extensions; and an interface to integrate the user develops alongside other extension at the same time. Implement neurofeedback paradigms and close-the-loop represent the most demanding and interesting tasks supported already in the system.
+
+
+%======================================================================
+\section{Future work} 
+
+We have presented a framework to develop \gls*{BCI} systems with a lot of new features that are not present in state-of-art. However, there are still many issues that can be addressed to improve the performance, acceptance and the wide spreading of our system. In particular, the following aspects could be of interest for future work:
+
+\begin{itemize}
+    % Paralelo
+    \item The electrodes density has always been one important discussion \cite{wang2016comparison, guo2020principles, liu2018detecting} in the field of \gls{BCI} systems. The proposed acquisition method has the potential to be parallelized and multiply the number of electrodes.
+    
+    % Acquisition system
+    \item As well the selected board for this work, \textit{OpenBCI Cyton}, is one of the hardware with best performance and configurability, there is necessary a new acquisition board that integrates the most recent technology and communication protocols in a single board.
+    
+    % Multimodal
+    \item The \gls*{SPRG} has recently interest in clinic multi-modal acquisition, BCI-Framework can be turn into a new framework to acquire and process real-time philological signals from multiple sources and serve visualizations, diagnostic support or store data.
+    
+    % Validación e implementacion en el grupo
+    \item Although the system has been proven under specific applications and some databases has been generated (\href{appendix:motor-imagery}{Appendix: Motor imagery}, \href{appendix:working_memory}{Appendix: Visuospatial working memory - Change detection}) there is necessary more integration and validation with the methodologies developed the group. 
+\end{itemize}
+
+
+
+%======================================================================
+\section{Academic products}
+
+%----------------------------------------------------------------------
+\subsection{Journal papers}
+Paper submitted to \textit{SoftwareX - Journals | Elsevier} with the name "A real-time acquisition, visualization, and stimuli delivery Python-based tool for neurophysiological experiments"
+
+%----------------------------------------------------------------------
+\subsection{Patents}
+The systems was submitted to the \textit{Crearlo no es suficiente} summons for a \textit{patentability search process} with the \textit{Universidad Nacional de Colombia sede Manizales} as main beneficiary, with the title "MÉTODO Y SISTEMA PARA LA SINCRONIZACIÓN DE MARCADORES ASOCIADOS A SISTEMAS DE INTERFAZ CEREBRO-COMPUTADOR", postulation ID \textit{343} and Application number \textit{NC2022/0007405} from May 28, 2022.
+
+%----------------------------------------------------------------------
+\subsection{Software registers}
+A script developed with BCI-Framework for motor imagery paradigm based on games stimulus (Pacman interface), was submitted to software register in the textit{Universidad Nacional de Colombia sede Manizales}.

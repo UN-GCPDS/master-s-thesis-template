@@ -1,0 +1,32 @@
+\begin{minted}
+[
+mathescape=true, 
+xleftmargin=1cm, 
+xrightmargin=1cm, 
+fontsize=\scriptsize, 
+baselinestretch=1.2,
+python3=true,
+%  samepage=true,
+% linenos=true,
+highlightlines={4, 12-13},
+style=emacs,
+highlightcolor=UN_primary!20,
+]
+{python}
+class Analysis(DataAnalysis):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.create_buffer(seconds=30, fill=0, resampling=1000)
+        self.stream()
+
+    @loop_consumer('eeg', 'aux')
+    def stream(self):
+        
+        # Resampled buffer: 
+        # the data from the last 30 seconds in a vector of 1000 samples
+        eeg_r = self.buffer_eeg_resampled
+        aux_r = self.buffer_aux_resampled
+         
+        print(f'EEG{eeg_r.shape}')
+        print(f'AUX{aux_r.shape}')
+\end{minted}
