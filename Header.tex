@@ -1,6 +1,12 @@
 \documentclass[12pt,fleqn,letterpaper]{scrbook}
 
 % Packages
+\usepackage[pagebackref=true]{hyperref}
+%\usepackage{hyperref}
+\usepackage[subfigure]{tocloft}
+%\usepackage[subfig]{tocloft}
+%\usepackage{tocloft}
+%\usepackage{tocloft}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{fancyhdr}
@@ -12,7 +18,7 @@
 \usepackage{here}
 \usepackage{graphicx}
 \usepackage{lscape}
-\usepackage{subfigure}
+%\usepackage{subfigure}
 \usepackage{longtable}
 \usepackage{setspace}
 \usepackage{array}
@@ -24,14 +30,23 @@
 \usepackage{xparse}
 \usepackage{xstring}
 \usepackage[titletoc]{appendix}
-\usepackage{subfig}
-\usepackage[titles]{tocloft}
+%\usepackage{subfig}
 \usepackage{enumitem}
-
+\usepackage{cancel}
+\usepackage{multirow}
+\usepackage{longtable}
+%\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{subfig}
+\usepackage{breakcites}
 % Show margins
 % \usepackage{showframe}
 % \renewcommand*\ShowFrameLinethickness{0.1pt}
 % \renewcommand*\ShowFrameColor{\color{black!10!white}}
+
+
+\usepackage{caption}
+%\usepackage{subcaption}
 
 % Math
 \usepackage{amstext,amsbsy,amsopn,amsmath,eucal,amsfonts,amssymb,amsthm}
@@ -52,6 +67,14 @@
 %  Scale=0.5
  ]{NotoSansMono-Regular.ttf}
 
+
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
 
 
 % Titles 
@@ -148,7 +171,6 @@
   \caption{#1}}
 
 % Bibliography with backref
-\usepackage[pagebackref=true]{hyperref}
 \renewcommand*{\backrefalt}[4]{\hspace*{\fill}\normalsize{
   \ifcase #1 (Not cited.)   % not cited
   \or (page~#2)             % cited once
@@ -163,7 +185,7 @@
     urlcolor=UN_comp1,
     filecolor=magenta,   
     citecolor=UN_secondary,
-    pdftitle={EEG-based BCI monitoring framework: Real-time acquisition and visualization from audiovisual stimulation paradigms - Yeison Cardona}
+    pdftitle={A Deep Learning Approach for Image-based Semantic Segmentation with Preserved Interpretability - Juan Carlos Aguirre Arango}
     }
 
 % Abbreviations
@@ -228,3 +250,69 @@
 
 % Change fontsize
 \renewcommand{\UrlFont}{\ttfamily\footnotesize}
+
+
+\newsavebox\mtbox
+\newcommand{\mtgraphics}[2][]{%
+\sbox\mtbox{\includegraphics[#1]{#2}}%
+\null%
+\dimen255=\dimexpr\pagegoal-\pagetotal-\baselineskip\relax%
+\ifdim\dimen255>\ht\mtbox
+  \usebox\mtbox
+\else
+\dimen254=\dimen255%
+\dimen255=\dimexpr\ht\mtbox-\dimen254\relax%
+  \includegraphics[trim=0mm 1.\dimen255 0mm 0mm, clip=true, #1]{#2}
+  \par
+  \includegraphics[trim=0mm 0mm 0mm \dimen254, clip=true, #1]{#2}
+\fi}
+
+\usepackage{pdfpages}
+
+
+\newcommand{\ssfamily}{\sffamily}
+
+
+
+
+\tcbuselibrary{many}
+\tcbset{
+    enhanced,
+    breakable,
+    attach boxed title to top left={
+        xshift=0.5cm,
+        yshift= -3.5mm, % What do I put here? I'd like to have something like:
+%       yshift= -0.5\titleboxheight
+    },
+    top=4mm,
+    coltitle=black,
+    beforeafter skip=\baselineskip,
+}
+
+\newenvironment{mybox}[1]{%
+    \begin{tcolorbox}[title={#1}]%
+    }{
+    \end{tcolorbox}
+}
+
+
+\usepackage{bm}
+\providecommand{\mat}[1]{{\bm{#1}}} 
+\providecommand{\ve}[1]{{\bm{#1}}} %vector format
+\providecommand{\mat}[1]{{\bm{#1}}} %matrix format
+\providecommand{\promed}[1]{\ensuremath{\mathds{E}\left\lbrace#1\right\rbrace}} %Expected value
+\providecommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}} %l-norm
+\providecommand{\oper}[1]{{\operatorname{#1}}\!} %operator name
+\providecommand{\Real}{\displaystyle\mathbb{R}} %R
+\providecommand{\N}{\displaystyle\mathbb{N}} %N
+\providecommand{\abs}[1]{\ensuremath{\left\lvert#1\right\rvert}} %||
+\DeclareMathOperator{\en}{\displaystyle\negthinspace\in\negthinspace} %∈
+\DeclareMathOperator{\igual}{\displaystyle\negthinspace=\negthinspace} %=
+\DeclareMathOperator{\x}{\displaystyle\negthinspace\times\negthinspace} %x
+\DeclareMathOperator{\tire}{\displaystyle\negthinspace--\negthinspace} %
+\providecommand{\s}[1]{\negthickspace#1\negthickspace} %
+\DeclareMathOperator*{\argmax}{argmax} %argmax
+
+
+
+\captionsetup{format=plain}
